@@ -22,7 +22,7 @@ $serverRequestFactory = new Nyholm\Psr7Server\ServerRequestCreator(
     $psr17Factory, // ServerRequestFactory
     $psr17Factory, // UriFactory
     $psr17Factory, // UploadedFileFactory
-    $psr17Factory,  // StreamFactory
+    $psr17Factory, // StreamFactory
 );
 
 // Psr\Http\Message\ServerRequestInterface instance
