@@ -1,6 +1,6 @@
 # PSR-7 Request Factory
 
-Factory class to create request body from PSR-7 server request objects.
+Factory class to create simple request objects from PSR-7 server requests.
 
 ## Installation
 
