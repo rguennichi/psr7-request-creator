@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Guennichi\Psr7RequestFactory;
+namespace Guennichi\Psr7RequestCreator;
 
 use Http\Message\MultipartStream\MultipartStreamBuilder;
-use Psr\Http\Message\RequestFactoryInterface as Psr7RequestFactory;
+use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
@@ -13,18 +13,18 @@ use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\UriInterface;
 
-final class RequestFactory implements RequestFactoryInterface
+final class RequestCreator implements RequestCreatorInterface
 {
     public function __construct(
+        private readonly RequestFactoryInterface $requestFactory,
         private readonly StreamFactoryInterface $streamFactory,
-        private readonly Psr7RequestFactory $psr7RequestFactory,
         private readonly MultipartStreamBuilder $multipartStreamBuilder,
     ) {
     }
 
     public function fromServerRequest(UriInterface|string $uri, ServerRequestInterface $serverRequest): RequestInterface
     {
-        $request = $this->psr7RequestFactory->createRequest($serverRequest->getMethod(), $uri);
+        $request = $this->requestFactory->createRequest($serverRequest->getMethod(), $uri);
 
         foreach ($serverRequest->getHeaders() as $name => $value) {
             $request = $request->withHeader($name, $value);

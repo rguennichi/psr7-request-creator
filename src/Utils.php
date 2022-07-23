@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Guennichi\Psr7RequestFactory;
+namespace Guennichi\Psr7RequestCreator;
 
 final class Utils
 {

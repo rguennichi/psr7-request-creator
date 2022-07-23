@@ -1,5 +1,5 @@
 {
-    "name": "guennichi/psr7-request-factory",
+    "name": "guennichi/psr7-request-creator",
     "description": "Factory class to create request body from PSR-7 server requests",
     "license": "MIT",
     "keywords": ["psr-7", "psr-17"],
@@ -23,12 +23,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Guennichi\\Psr7RequestFactory\\": "src/"
+            "Guennichi\\Psr7RequestCreator\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\Guennichi\\Psr7RequestFactory\\": "tests/"
+            "Tests\\Guennichi\\Psr7RequestCreator\\": "tests/"
         }
     }
 }

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Tests\Guennichi\Psr7RequestFactory;
+namespace Tests\Guennichi\Psr7RequestCreator;
 
-use Guennichi\Psr7RequestFactory\Utils;
+use Guennichi\Psr7RequestCreator\Utils;
 use PHPUnit\Framework\TestCase;
 
 class UtilsTest extends TestCase

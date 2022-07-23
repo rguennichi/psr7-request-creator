@@ -2,24 +2,24 @@
 
 declare(strict_types=1);
 
-namespace Tests\Guennichi\Psr7RequestFactory;
+namespace Tests\Guennichi\Psr7RequestCreator;
 
-use Guennichi\Psr7RequestFactory\RequestFactory;
-use Guennichi\Psr7RequestFactory\RequestFactoryInterface;
+use Guennichi\Psr7RequestCreator\RequestCreator;
+use Guennichi\Psr7RequestCreator\RequestCreatorInterface;
 use Http\Message\MultipartStream\MultipartStreamBuilder;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use PHPUnit\Framework\TestCase;
 
-class RequestFactoryTest extends TestCase
+class RequestCreatorTest extends TestCase
 {
     private Psr17Factory $psr17Factory;
-    private RequestFactoryInterface $requestFactory;
+    private RequestCreatorInterface $requestCreator;
 
     protected function setUp(): void
     {
         $this->psr17Factory = new Psr17Factory();
 
-        $this->requestFactory = new RequestFactory(
+        $this->requestCreator = new RequestCreator(
             $this->psr17Factory,
             $this->psr17Factory,
             new MultipartStreamBuilder($this->psr17Factory),
@@ -29,7 +29,7 @@ class RequestFactoryTest extends TestCase
     public function testRequestCreatedWithGivenUri(): void
     {
         $serverRequest = $this->psr17Factory->createServerRequest('GET', '/test');
-        $request = $this->requestFactory->fromServerRequest('/custom', $serverRequest);
+        $request = $this->requestCreator->fromServerRequest('/custom', $serverRequest);
 
         $this->assertSame('/custom', $request->getUri()->getPath());
     }
@@ -37,7 +37,7 @@ class RequestFactoryTest extends TestCase
     public function testRequestMethodUsesSameServerMethod(): void
     {
         $serverRequest = $this->psr17Factory->createServerRequest('PUT', '/test');
-        $request = $this->requestFactory->fromServerRequest('/custom', $serverRequest);
+        $request = $this->requestCreator->fromServerRequest('/custom', $serverRequest);
 
         $this->assertSame('PUT', $request->getMethod());
     }
@@ -48,7 +48,7 @@ class RequestFactoryTest extends TestCase
             ->withHeader('header-1', 'value-1')
             ->withHeader('header-2', 'value-2');
 
-        $request = $this->requestFactory->fromServerRequest('/test', $serverRequest);
+        $request = $this->requestCreator->fromServerRequest('/test', $serverRequest);
 
         $this->assertSame(['header-1' => ['value-1'], 'header-2' => ['value-2']], $request->getHeaders());
     }
@@ -59,7 +59,7 @@ class RequestFactoryTest extends TestCase
             ->withBody($this->psr17Factory->createStream('{"message": "test"}'))
             ->withParsedBody(['foo' => 'bar']);
 
-        $request = $this->requestFactory->fromServerRequest('/test', $serverRequest);
+        $request = $this->requestCreator->fromServerRequest('/test', $serverRequest);
 
         $this->assertSame('{"message": "test"}', (string) $request->getBody());
     }
@@ -70,7 +70,7 @@ class RequestFactoryTest extends TestCase
             ->withBody($this->psr17Factory->createStream(''))
             ->withParsedBody(['foo' => 'bar']);
 
-        $request = $this->requestFactory->fromServerRequest('/test', $serverRequest);
+        $request = $this->requestCreator->fromServerRequest('/test', $serverRequest);
 
         $this->assertSame('foo=bar', (string) $request->getBody());
     }
@@ -81,7 +81,7 @@ class RequestFactoryTest extends TestCase
             ->withHeader('Content-Type', 'application/x-www-form-urlencoded')
             ->withParsedBody(['a' => 'b', 'c' => ['d' => 'e']]);
 
-        $request = $this->requestFactory->fromServerRequest('/test', $serverRequest);
+        $request = $this->requestCreator->fromServerRequest('/test', $serverRequest);
 
         $this->assertSame('a=b&c%5Bd%5D=e', (string) $request->getBody());
     }
@@ -92,7 +92,7 @@ class RequestFactoryTest extends TestCase
             ->withHeader('Content-Type', 'multipart/form-data')
             ->withParsedBody(['example' => 'testvalue']);
 
-        $request = $this->requestFactory->fromServerRequest('/test', $serverRequest);
+        $request = $this->requestCreator->fromServerRequest('/test', $serverRequest);
 
         $this->assertStringStartsWith('multipart/form-data', $request->getHeaderLine('Content-Type'));
 
@@ -111,7 +111,7 @@ class RequestFactoryTest extends TestCase
                 'images' => ['httplug' => $this->psr17Factory->createStreamFromFile(__DIR__ . '/Resources/httplug.png')],
             ]);
 
-        $request = $this->requestFactory->fromServerRequest('/test', $serverRequest);
+        $request = $this->requestCreator->fromServerRequest('/test', $serverRequest);
 
         $this->assertStringStartsWith('multipart/form-data', $request->getHeaderLine('Content-Type'));
 

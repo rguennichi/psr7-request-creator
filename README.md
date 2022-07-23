@@ -1,11 +1,11 @@
-# PSR-7 Request Factory
+# PSR-7 Request Creator
 
 Factory class to create simple request objects from PSR-7 server requests.
 
 ## Installation
 
 ```bash
-composer require guennichi/psr7-request-factory
+composer require guennichi/psr7-request-creator
 ```
 
 ## Usage
@@ -18,7 +18,7 @@ or any other PSR-7 implementation to transform server requests:
 ```php
 $psr17Factory = new Nyholm\Psr7\Factory\Psr17Factory();
 
-$serverRequestFactory = new Nyholm\Psr7Server\ServerRequestCreator(
+$serverRequestCreator = new Nyholm\Psr7Server\ServerRequestCreator(
     $psr17Factory, // ServerRequestFactory
     $psr17Factory, // UriFactory
     $psr17Factory, // UploadedFileFactory
@@ -26,14 +26,14 @@ $serverRequestFactory = new Nyholm\Psr7Server\ServerRequestCreator(
 );
 
 // Psr\Http\Message\ServerRequestInterface instance
-$serverRequest = $serverRequestFactory->fromGlobals();
+$serverRequest = $serverRequestCreator->fromGlobals();
 
-$requestFactory = new Guennichi\Psr7RequestFactory\RequestFactory(
-    $psr17Factory,
-    $psr17Factory,
+$requestCreator = new Guennichi\Psr7RequestFactory\RequestCreator(
+    $psr17Factory, // RequestFactory
+    $psr17Factory, // StreamFactory
     new Http\Message\MultipartStream\MultipartStreamBuilder($psr17Factory),
 );
 
 // Psr\Http\Message\RequestInterface instance
-$request = $requestFactory->fromServerRequest('/example', $serverRequest);
+$request = $requestCreator->fromServerRequest('/example', $serverRequest);
 ```
