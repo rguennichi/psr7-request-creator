@@ -41,12 +41,15 @@ final class RequestCreator implements RequestCreatorInterface
             $this->multipartStreamBuilder->reset();
 
             foreach ([...$postParams, ...Utils::flatten($serverRequest->getUploadedFiles())] as $name => $value) {
-                $this->multipartStreamBuilder->addResource($name, match (true) {
-                    $value instanceof UploadedFileInterface => $value->getStream(),
-                    \is_resource($value) => $this->streamFactory->createStreamFromResource($value),
-                    \is_string($value) || $value instanceof StreamInterface => $value,
-                    default => throw new \RuntimeException(sprintf('The parameter "%s" should be "%s", "%s" given.', $name, implode('|', [UploadedFileInterface::class, 'resource', 'string']), get_debug_type($value)))
-                });
+                if ($value instanceof UploadedFileInterface) {
+                    $this->multipartStreamBuilder->addResource($name, $value->getStream(), ['filename' => $value->getClientFilename()]);
+                } else {
+                    $this->multipartStreamBuilder->addResource($name, match (true) {
+                        \is_resource($value) => $this->streamFactory->createStreamFromResource($value),
+                        \is_string($value) || $value instanceof StreamInterface => $value,
+                        default => throw new \RuntimeException(sprintf('The parameter "%s" should be "%s", "%s" given.', $name, implode('|', [UploadedFileInterface::class, 'resource', 'string']), get_debug_type($value)))
+                    });
+                }
             }
 
             return $request->withBody($this->multipartStreamBuilder->build())
