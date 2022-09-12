@@ -47,7 +47,7 @@ final class RequestCreator implements RequestCreatorInterface
                     $this->multipartStreamBuilder->addResource($name, match (true) {
                         \is_resource($value) => $this->streamFactory->createStreamFromResource($value),
                         \is_string($value) || $value instanceof StreamInterface => $value,
-                        default => throw new \RuntimeException(sprintf('The parameter "%s" should be "%s", "%s" given.', $name, implode('|', [UploadedFileInterface::class, 'resource', 'string']), get_debug_type($value)))
+                        default => throw new \RuntimeException(sprintf('The parameter "%s" should be "%s", "%s" given.', $name, implode('|', ['resource', 'string']), get_debug_type($value)))
                     });
                 }
             }
